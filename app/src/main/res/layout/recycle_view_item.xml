@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="5dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/mission_name_text"
+        android:textSize="16sp"
+        android:textAlignment="viewStart"
+        android:padding="2dp"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/textMissionName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="viewStart"
+        android:textSize="14sp"
+        android:padding="5dp"
+        android:layout_marginLeft="15dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/rocket_name_text"
+        android:textSize="16sp"
+        android:textAlignment="viewStart"
+        android:padding="2dp"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/textRocketName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:textAlignment="viewStart"
+        android:padding="5dp"
+        android:layout_marginLeft="15dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/launch_site_name_text"
+        android:textSize="16sp"
+        android:textAlignment="viewStart"
+        android:padding="2dp"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/textLaunchSiteName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:textAlignment="viewStart"
+        android:padding="5dp"
+        android:layout_marginLeft="15dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/date_of_launch_text"
+        android:textSize="16sp"
+        android:textAlignment="viewStart"
+        android:padding="2dp"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/textDateOfLaunch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:textAlignment="viewStart"
+        android:padding="5dp"
+        android:layout_marginLeft="15dp"/>
+
+    <ImageView
+        android:id="@+id/imageLaunchImage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scaleType="fitCenter"
+        android:adjustViewBounds="true"/>
+</LinearLayout>

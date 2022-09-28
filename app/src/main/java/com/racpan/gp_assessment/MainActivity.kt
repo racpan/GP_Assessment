@@ -1,58 +1,59 @@
 package com.racpan.gp_assessment
 
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
+import android.view.View
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
-import android.view.Menu
-import android.view.MenuItem
-import com.racpan.gp_assessment.databinding.ActivityMainBinding
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.racpan.gp_assessment.adapters.LaunchDataRecycleViewAdapter
+import com.racpan.gp_assessment.data_model.LaunchData
+import com.racpan.gp_assessment.network.NetworkCalls
+import com.racpan.gp_assessment.parser.JSONToModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.json.JSONArray
+import org.json.JSONException
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var appBarConfiguration: AppBarConfiguration
-    private lateinit var binding: ActivityMainBinding
+    private lateinit var networkCalls : NetworkCalls
+    private lateinit var launchData : JSONArray
+    private lateinit var viewRecyclerLaunchData : RecyclerView
+    private lateinit var textErrorMessage : TextView
+    private val networkScope = CoroutineScope(Dispatchers.Main)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
 
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        networkCalls = NetworkCalls()
+        viewRecyclerLaunchData = findViewById(R.id.viewRecyclerLaunchData)
+        textErrorMessage = findViewById(R.id.textErrorMessage)
 
-        setSupportActionBar(binding.toolbar)
-
-        val navController = findNavController(R.id.nav_host_fragment_content_main)
-        appBarConfiguration = AppBarConfiguration(navController.graph)
-        setupActionBarWithNavController(navController, appBarConfiguration)
-
-        binding.fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
+        networkScope.launch {
+            var result = ""
+            var launchDataList : MutableList<LaunchData> = mutableListOf()
+            try {
+                withContext(Dispatchers.IO) {
+                    result = networkCalls.getLaunchData(getString(R.string.api_url), applicationContext)
+                    launchData = JSONArray(result)
+                    for (i in 0 until launchData.length()) {
+                        var jsonToModel = JSONToModel()
+                        launchDataList.add(jsonToModel.jsonToLaunchData(launchData.getJSONObject(i), applicationContext))
+                    }
+                }
+                launchDataList.sortByDescending { it.launchDateLocal }
+                val rvAdapter = LaunchDataRecycleViewAdapter(launchDataList)
+                viewRecyclerLaunchData.adapter = rvAdapter
+                viewRecyclerLaunchData.layoutManager = LinearLayoutManager(applicationContext)
+            } catch (ex : JSONException) {
+                viewRecyclerLaunchData.visibility = View.GONE
+                textErrorMessage.visibility = View.VISIBLE
+                textErrorMessage.text = result
+            }
         }
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.menu_main, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        return when (item.itemId) {
-            R.id.action_settings -> true
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-
-    override fun onSupportNavigateUp(): Boolean {
-        val navController = findNavController(R.id.nav_host_fragment_content_main)
-        return navController.navigateUp(appBarConfiguration)
-                || super.onSupportNavigateUp()
     }
 }
